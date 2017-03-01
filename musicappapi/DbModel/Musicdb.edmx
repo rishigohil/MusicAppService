@@ -1,0 +1,563 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="musicdb.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Conditions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrackSetId" Type="int" />
+          <Property Name="OutputId" Type="int" />
+          <Property Name="AbsoluteStartDate" Type="datetime" />
+          <Property Name="AbsoluteEndDate" Type="datetime" />
+          <Property Name="AnnualStartDate" Type="datetime" />
+          <Property Name="AnnualEndDate" Type="datetime" />
+          <Property Name="DaysOfWeek" Type="tinyint" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="Priority" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="Outputs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="64" />
+          <Property Name="Description" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="Plays">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TrackId" Type="int" />
+          <Property Name="OutputId" Type="int" />
+          <Property Name="TimePlayed" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tracks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Path" Type="nvarchar" MaxLength="256" />
+          <Property Name="Title" Type="nvarchar" MaxLength="128" />
+          <Property Name="Artist" Type="nvarchar" MaxLength="128" />
+          <Property Name="Genre" Type="nvarchar" MaxLength="64" />
+          <Property Name="Year" Type="smallint" />
+          <Property Name="DateAdded" Type="datetime" />
+          <Property Name="Duration" Type="bigint" />
+          <Property Name="Gain" Type="decimal" Precision="4" Scale="2" />
+          <Property Name="Peak" Type="decimal" Precision="7" Scale="6" />
+          <Property Name="PlaybackError" Type="bit" />
+          <Property Name="RandomFactor" Type="int" />
+        </EntityType>
+        <EntityType Name="Tracks_Outputs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="TrackId" Type="int" />
+          <Property Name="OutputId" Type="int" />
+          <Property Name="LastPlayed" Type="datetime" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tracks_TrackSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="TrackId" Type="int" />
+          <Property Name="TrackSetId" Type="int" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TrackSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="64" />
+          <Property Name="Description" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <Association Name="FK_Conditions_Outputs">
+          <End Role="Outputs" Type="Self.Outputs" Multiplicity="0..1" />
+          <End Role="Conditions" Type="Self.Conditions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Outputs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conditions">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Conditions_TrackSets">
+          <End Role="TrackSets" Type="Self.TrackSets" Multiplicity="0..1" />
+          <End Role="Conditions" Type="Self.Conditions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrackSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conditions">
+              <PropertyRef Name="TrackSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plays_Outputs">
+          <End Role="Outputs" Type="Self.Outputs" Multiplicity="0..1" />
+          <End Role="Plays" Type="Self.Plays" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Outputs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plays">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plays_tracks">
+          <End Role="tracks" Type="Self.tracks" Multiplicity="0..1" />
+          <End Role="Plays" Type="Self.Plays" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tracks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plays">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_Outputs_Outputs">
+          <End Role="Outputs" Type="Self.Outputs" Multiplicity="0..1" />
+          <End Role="Tracks_Outputs" Type="Self.Tracks_Outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Outputs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_Outputs">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_Outputs_tracks">
+          <End Role="tracks" Type="Self.tracks" Multiplicity="0..1" />
+          <End Role="Tracks_Outputs" Type="Self.Tracks_Outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tracks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_Outputs">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_TrackSets_tracks">
+          <End Role="tracks" Type="Self.tracks" Multiplicity="0..1" />
+          <End Role="Tracks_TrackSets" Type="Self.Tracks_TrackSets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tracks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_TrackSets">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_TrackSets_TrackSets">
+          <End Role="TrackSets" Type="Self.TrackSets" Multiplicity="0..1" />
+          <End Role="Tracks_TrackSets" Type="Self.Tracks_TrackSets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrackSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_TrackSets">
+              <PropertyRef Name="TrackSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="musicdbStoreContainer">
+          <EntitySet Name="Conditions" EntityType="Self.Conditions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Outputs" EntityType="Self.Outputs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Plays" EntityType="Self.Plays" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tracks" EntityType="Self.tracks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tracks_Outputs" EntityType="Self.Tracks_Outputs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tracks_TrackSets" EntityType="Self.Tracks_TrackSets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TrackSets" EntityType="Self.TrackSets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Conditions_Outputs" Association="Self.FK_Conditions_Outputs">
+            <End Role="Outputs" EntitySet="Outputs" />
+            <End Role="Conditions" EntitySet="Conditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Conditions_TrackSets" Association="Self.FK_Conditions_TrackSets">
+            <End Role="TrackSets" EntitySet="TrackSets" />
+            <End Role="Conditions" EntitySet="Conditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plays_Outputs" Association="Self.FK_Plays_Outputs">
+            <End Role="Outputs" EntitySet="Outputs" />
+            <End Role="Plays" EntitySet="Plays" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plays_tracks" Association="Self.FK_Plays_tracks">
+            <End Role="tracks" EntitySet="tracks" />
+            <End Role="Plays" EntitySet="Plays" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_Outputs_Outputs" Association="Self.FK_Tracks_Outputs_Outputs">
+            <End Role="Outputs" EntitySet="Outputs" />
+            <End Role="Tracks_Outputs" EntitySet="Tracks_Outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_Outputs_tracks" Association="Self.FK_Tracks_Outputs_tracks">
+            <End Role="tracks" EntitySet="tracks" />
+            <End Role="Tracks_Outputs" EntitySet="Tracks_Outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_TrackSets_tracks" Association="Self.FK_Tracks_TrackSets_tracks">
+            <End Role="tracks" EntitySet="tracks" />
+            <End Role="Tracks_TrackSets" EntitySet="Tracks_TrackSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_TrackSets_TrackSets" Association="Self.FK_Tracks_TrackSets_TrackSets">
+            <End Role="TrackSets" EntitySet="TrackSets" />
+            <End Role="Tracks_TrackSets" EntitySet="Tracks_TrackSets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="musicdb" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Condition">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TrackSetId" Type="Int32" />
+          <Property Name="OutputId" Type="Int32" />
+          <Property Name="AbsoluteStartDate" Type="DateTime" Precision="3" />
+          <Property Name="AbsoluteEndDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnualStartDate" Type="DateTime" Precision="3" />
+          <Property Name="AnnualEndDate" Type="DateTime" Precision="3" />
+          <Property Name="DaysOfWeek" Type="Byte" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="Priority" Type="Byte" />
+          <NavigationProperty Name="Output" Relationship="Self.FK_Conditions_Outputs" FromRole="Conditions" ToRole="Outputs" />
+          <NavigationProperty Name="TrackSet" Relationship="Self.FK_Conditions_TrackSets" FromRole="Conditions" ToRole="TrackSets" />
+        </EntityType>
+        <EntityType Name="Output">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Conditions" Relationship="Self.FK_Conditions_Outputs" FromRole="Outputs" ToRole="Conditions" />
+          <NavigationProperty Name="Plays" Relationship="Self.FK_Plays_Outputs" FromRole="Outputs" ToRole="Plays" />
+          <NavigationProperty Name="Tracks_Outputs" Relationship="musicdb.FK_Tracks_Outputs_Outputs" FromRole="Output" ToRole="Tracks_Outputs" />
+        </EntityType>
+        <EntityType Name="Play">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TrackId" Type="Int32" />
+          <Property Name="OutputId" Type="Int32" />
+          <Property Name="TimePlayed" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Output" Relationship="Self.FK_Plays_Outputs" FromRole="Plays" ToRole="Outputs" />
+          <NavigationProperty Name="track" Relationship="Self.FK_Plays_tracks" FromRole="Plays" ToRole="tracks" />
+        </EntityType>
+        <EntityType Name="track">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Path" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Artist" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Genre" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Year" Type="Int16" />
+          <Property Name="DateAdded" Type="DateTime" Precision="3" />
+          <Property Name="Duration" Type="Int64" />
+          <Property Name="Gain" Type="Decimal" Precision="4" Scale="2" />
+          <Property Name="Peak" Type="Decimal" Precision="7" Scale="6" />
+          <Property Name="PlaybackError" Type="Boolean" />
+          <Property Name="RandomFactor" Type="Int32" />
+          <NavigationProperty Name="Plays" Relationship="Self.FK_Plays_tracks" FromRole="tracks" ToRole="Plays" />
+          <NavigationProperty Name="Tracks_Outputs" Relationship="musicdb.FK_Tracks_Outputs_tracks" FromRole="track" ToRole="Tracks_Outputs" />
+          <NavigationProperty Name="Tracks_TrackSets" Relationship="musicdb.FK_Tracks_TrackSets_tracks" FromRole="track" ToRole="Tracks_TrackSets" />
+        </EntityType>
+        <EntityType Name="TrackSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Conditions" Relationship="Self.FK_Conditions_TrackSets" FromRole="TrackSets" ToRole="Conditions" />
+          <NavigationProperty Name="Tracks_TrackSets" Relationship="musicdb.FK_Tracks_TrackSets_TrackSets" FromRole="TrackSet" ToRole="Tracks_TrackSets" />
+        </EntityType>
+        <Association Name="FK_Conditions_Outputs">
+          <End Role="Outputs" Type="Self.Output" Multiplicity="0..1" />
+          <End Role="Conditions" Type="Self.Condition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Outputs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conditions">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Conditions_TrackSets">
+          <End Role="TrackSets" Type="Self.TrackSet" Multiplicity="0..1" />
+          <End Role="Conditions" Type="Self.Condition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrackSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Conditions">
+              <PropertyRef Name="TrackSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plays_Outputs">
+          <End Role="Outputs" Type="Self.Output" Multiplicity="0..1" />
+          <End Role="Plays" Type="Self.Play" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Outputs">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plays">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plays_tracks">
+          <End Role="tracks" Type="Self.track" Multiplicity="0..1" />
+          <End Role="Plays" Type="Self.Play" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tracks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plays">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="musicdbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Conditions" EntityType="Self.Condition" />
+          <EntitySet Name="Outputs" EntityType="Self.Output" />
+          <EntitySet Name="Plays" EntityType="Self.Play" />
+          <EntitySet Name="tracks" EntityType="Self.track" />
+          <EntitySet Name="TrackSets" EntityType="Self.TrackSet" />
+          <AssociationSet Name="FK_Conditions_Outputs" Association="Self.FK_Conditions_Outputs">
+            <End Role="Outputs" EntitySet="Outputs" />
+            <End Role="Conditions" EntitySet="Conditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Conditions_TrackSets" Association="Self.FK_Conditions_TrackSets">
+            <End Role="TrackSets" EntitySet="TrackSets" />
+            <End Role="Conditions" EntitySet="Conditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plays_Outputs" Association="Self.FK_Plays_Outputs">
+            <End Role="Outputs" EntitySet="Outputs" />
+            <End Role="Plays" EntitySet="Plays" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plays_tracks" Association="Self.FK_Plays_tracks">
+            <End Role="tracks" EntitySet="tracks" />
+            <End Role="Plays" EntitySet="Plays" />
+          </AssociationSet>
+          <EntitySet Name="Tracks_Outputs" EntityType="musicdb.Tracks_Outputs" />
+          <EntitySet Name="Tracks_TrackSets" EntityType="musicdb.Tracks_TrackSets" />
+          <AssociationSet Name="FK_Tracks_Outputs_Outputs" Association="musicdb.FK_Tracks_Outputs_Outputs">
+            <End Role="Output" EntitySet="Outputs" />
+            <End Role="Tracks_Outputs" EntitySet="Tracks_Outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_Outputs_tracks" Association="musicdb.FK_Tracks_Outputs_tracks">
+            <End Role="track" EntitySet="tracks" />
+            <End Role="Tracks_Outputs" EntitySet="Tracks_Outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_TrackSets_tracks" Association="musicdb.FK_Tracks_TrackSets_tracks">
+            <End Role="track" EntitySet="tracks" />
+            <End Role="Tracks_TrackSets" EntitySet="Tracks_TrackSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tracks_TrackSets_TrackSets" Association="musicdb.FK_Tracks_TrackSets_TrackSets">
+            <End Role="TrackSet" EntitySet="TrackSets" />
+            <End Role="Tracks_TrackSets" EntitySet="Tracks_TrackSets" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Tracks_Outputs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="TrackId" Type="Int32" />
+          <Property Name="OutputId" Type="Int32" />
+          <Property Name="LastPlayed" Type="DateTime" Precision="3" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Output" Relationship="musicdb.FK_Tracks_Outputs_Outputs" FromRole="Tracks_Outputs" ToRole="Output" />
+          <NavigationProperty Name="track" Relationship="musicdb.FK_Tracks_Outputs_tracks" FromRole="Tracks_Outputs" ToRole="track" />
+        </EntityType>
+        <EntityType Name="Tracks_TrackSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="TrackId" Type="Int32" />
+          <Property Name="TrackSetId" Type="Int32" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="track" Relationship="musicdb.FK_Tracks_TrackSets_tracks" FromRole="Tracks_TrackSets" ToRole="track" />
+          <NavigationProperty Name="TrackSet" Relationship="musicdb.FK_Tracks_TrackSets_TrackSets" FromRole="Tracks_TrackSets" ToRole="TrackSet" />
+        </EntityType>
+        <Association Name="FK_Tracks_Outputs_Outputs">
+          <End Type="musicdb.Output" Role="Output" Multiplicity="0..1" />
+          <End Type="musicdb.Tracks_Outputs" Role="Tracks_Outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Output">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_Outputs">
+              <PropertyRef Name="OutputId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_Outputs_tracks">
+          <End Type="musicdb.track" Role="track" Multiplicity="0..1" />
+          <End Type="musicdb.Tracks_Outputs" Role="Tracks_Outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="track">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_Outputs">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_TrackSets_tracks">
+          <End Type="musicdb.track" Role="track" Multiplicity="0..1" />
+          <End Type="musicdb.Tracks_TrackSets" Role="Tracks_TrackSets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="track">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_TrackSets">
+              <PropertyRef Name="TrackId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tracks_TrackSets_TrackSets">
+          <End Type="musicdb.TrackSet" Role="TrackSet" Multiplicity="0..1" />
+          <End Type="musicdb.Tracks_TrackSets" Role="Tracks_TrackSets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TrackSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tracks_TrackSets">
+              <PropertyRef Name="TrackSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="musicdbStoreContainer" CdmEntityContainer="musicdbEntities">
+          <EntitySetMapping Name="Conditions">
+            <EntityTypeMapping TypeName="musicdb.Condition">
+              <MappingFragment StoreEntitySet="Conditions">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TrackSetId" ColumnName="TrackSetId" />
+                <ScalarProperty Name="OutputId" ColumnName="OutputId" />
+                <ScalarProperty Name="AbsoluteStartDate" ColumnName="AbsoluteStartDate" />
+                <ScalarProperty Name="AbsoluteEndDate" ColumnName="AbsoluteEndDate" />
+                <ScalarProperty Name="AnnualStartDate" ColumnName="AnnualStartDate" />
+                <ScalarProperty Name="AnnualEndDate" ColumnName="AnnualEndDate" />
+                <ScalarProperty Name="DaysOfWeek" ColumnName="DaysOfWeek" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Outputs">
+            <EntityTypeMapping TypeName="musicdb.Output">
+              <MappingFragment StoreEntitySet="Outputs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Plays">
+            <EntityTypeMapping TypeName="musicdb.Play">
+              <MappingFragment StoreEntitySet="Plays">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
+                <ScalarProperty Name="OutputId" ColumnName="OutputId" />
+                <ScalarProperty Name="TimePlayed" ColumnName="TimePlayed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tracks">
+            <EntityTypeMapping TypeName="musicdb.track">
+              <MappingFragment StoreEntitySet="tracks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Artist" ColumnName="Artist" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="DateAdded" ColumnName="DateAdded" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Gain" ColumnName="Gain" />
+                <ScalarProperty Name="Peak" ColumnName="Peak" />
+                <ScalarProperty Name="PlaybackError" ColumnName="PlaybackError" />
+                <ScalarProperty Name="RandomFactor" ColumnName="RandomFactor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrackSets">
+            <EntityTypeMapping TypeName="musicdb.TrackSet">
+              <MappingFragment StoreEntitySet="TrackSets">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tracks_Outputs">
+            <EntityTypeMapping TypeName="musicdb.Tracks_Outputs">
+              <MappingFragment StoreEntitySet="Tracks_Outputs">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="LastPlayed" ColumnName="LastPlayed" />
+                <ScalarProperty Name="OutputId" ColumnName="OutputId" />
+                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tracks_TrackSets">
+            <EntityTypeMapping TypeName="musicdb.Tracks_TrackSets">
+              <MappingFragment StoreEntitySet="Tracks_TrackSets">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TrackSetId" ColumnName="TrackSetId" />
+                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
